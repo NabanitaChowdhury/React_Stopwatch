@@ -9,27 +9,36 @@ function App() {
   const [minute, setMinute] = useState(0)
   const [second, setSecond] = useState(0)
   const [decisecond, setDecisecond] = useState(0)
-  const [startFlag, setStartFlag] = useState(true)
+  const [startFlag, setStartFlag] = useState(false)
 
   const stopWatch = () => {
-    if (startFlag) {
 
-      if (decisecond === 100) {
-        setDecisecond(0)
-        setSecond(second + 1)
-      }
-      if (second === 60) {
+
+    if (decisecond === 99) {
+      setDecisecond(0)
+      if (second === 59) {
         setSecond(0)
         setMinute(minute + 1)
+      } else {
+        setSecond(second + 1)
       }
+    }
+    else {
       setDecisecond(decisecond + 1)
-      setTimeout(stopWatch, 10);
     }
   };
-  useEffect(stopWatch,[startFlag])
+  useEffect(() => {
+    let timeRef;
+    if (startFlag) {
+      timeRef = setTimeout(stopWatch, 10)
+    }
+    return () => {
+      clearTimeout()
+    }
+  }, [startFlag, decisecond, second, minute])
   const onClickStart = () => {
     console.log("start")
-    stopWatch()
+    setStartFlag(true)
 
   }
   const onClickPause = () => {
